@@ -18,7 +18,18 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+
+// root: public directory
+// path is relative to where the node process is launched,
+// so we should use absolute path (the __dirname bit)
+
+// Example: public/img/foo.png
+//   Accessible from localhost:3000/img/foo.png
+var static_middleware = express.static(path.join(__dirname, 'public'));
+app.use(static_middleware);
+
+// Can use a virtual path prefix by specifying a mount path:
+app.use('/static', static_middleware);
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
